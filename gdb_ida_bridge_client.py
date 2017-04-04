@@ -4,6 +4,7 @@
 import os
 import socket
 import struct
+from __future__ import print_function
 
 IDA_BRIGE_IP = '10.0.10.10'
 IDA_BRIDGE_PORT = 2305
@@ -63,7 +64,7 @@ class IdaBridge(gdb.Command):
 		try:
 			s.connect((self.ida_ip, self.ida_port))
 		except Exception as e:
-			print "couldn't connect to IDA bridge", str(e)
+			print("couldn't connect to IDA bridge", str(e))
 			return
 
 		s.send(struct.pack("<Q", pc))
@@ -73,13 +74,13 @@ class IdaBridge(gdb.Command):
 	def invoke(self, arg, from_tty):
 		argv = arg.split(' ')
 		if len(argv) < 1:
-			print "idabridge <ip:port> [reloc_text]"
+			print("idabridge <ip:port> [reloc_text]")
 			return
 
 		target = argv[0].split(':')
 
 		if not '.' in target[0] or len(target) < 2:
-			print "please specify ip:port combination"
+			print("please specify ip:port combination")
 			return
 
 		self.ida_ip = target[0]
