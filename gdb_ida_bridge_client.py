@@ -1,10 +1,10 @@
 # (C) Copyright 2016 Comsecuris UG
 # https://sourceware.org/gdb/onlinedocs/gdb/Events-In-Python.html#Events-In-Python
 
+from __future__ import print_function
 import os
 import socket
 import struct
-from __future__ import print_function
 
 IDA_BRIGE_IP = '10.0.10.10'
 IDA_BRIDGE_PORT = 2305
