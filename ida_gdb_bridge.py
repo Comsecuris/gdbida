@@ -1,9 +1,11 @@
 import idautils
+import ida_kernwin
 import signal
 import idc
 import idaapi
 
 import socket
+import struct
 import threading
 import time
 import Queue
@@ -30,24 +32,24 @@ class color_req_t(object):
 		self.color = color
 
 	def __call__(self):
-		SetColor(self.ea, CIC_ITEM, self.color)
+		idc.SetColor(self.ea, idc.CIC_ITEM, self.color)
 		
 		return False # Don't reschedule
 
 def safe_setcolor(ea, color):
-	idaapi.execute_ui_requests((color_req_t(ea, color),))
+	ida_kernwin.execute_ui_requests((color_req_t(ea, color),))
 
 class jump_req_t(object):
 	def __init__(self, ea):
 		self.ea = ea
 
 	def __call__(self):
-		Jump(self.ea)
+		idc.Jump(self.ea)
 		
 		return False # Don't reschedule
 
 def safe_jump(ea):
-	idaapi.execute_ui_requests((jump_req_t(ea),))
+	ida_kernwin.execute_ui_requests((jump_req_t(ea),))
 
 # TODO: in case of any exceptions it may be nice to have
 # a list of all locations where color was changed so that on
@@ -76,7 +78,8 @@ class ColorThread(threading.Thread):
 
 			try:
 				event_ea = int(struct.unpack("<Q", ea)[0])
-			except:
+			except Exception as e:
+				dprint("error pc conversion: %s" %(str(e)))
 				continue
 
 			dprint("current position: %x" %(event_ea))
@@ -109,6 +112,7 @@ class BridgeThread(threading.Thread):
 
 	def bind(self):
 		try:
+			self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 			self.s.bind(self.server)
 		except:
 			dprint("bind() failed")
