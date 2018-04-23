@@ -132,7 +132,7 @@ class BridgeThread(threading.Thread):
 				continue
 
 			try:
-				read_ea = conn.recv(4)
+				read_ea = conn.recv(8)
 			except Exception as e:
 				dprint("closing client/%s connection: %s" % (addr, str(e)))
 				conn.close()
