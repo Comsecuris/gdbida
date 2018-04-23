@@ -157,12 +157,12 @@ class ida_gdb_debug_bridge_plugin(idaapi.plugin_t):
 			dprint("server already running: %s:%s\n" % (self.bridge_thread.server[0], self.bridge_thread.server[1]))
 			return
 
-		ask_port = AskLong(2305, "Enter port number for incoming events")
+		ask_port = idc.AskLong(2305, "Enter port number for incoming events")
 		if ask_port < 1 or ask_port <= 1024:
 			dprint('invalid port number')
 			return
 
-		ask_addr = AskStr('0.0.0.0', "Enter address to bind to")
+		ask_addr = idc.AskStr('0.0.0.0', "Enter address to bind to")
 
 		self.bridge_thread.server = (ask_addr, ask_port)
 		if self.bridge_thread.running == False:
